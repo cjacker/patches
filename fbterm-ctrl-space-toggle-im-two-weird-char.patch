@@ -1,0 +1,16 @@
+diff --color -Nur fbterm-1.7/src/fbshell.cpp fbterm-1.7.fix/src/fbshell.cpp
+--- fbterm-1.7/src/fbshell.cpp	2010-10-06 12:23:08.000000000 +0800
++++ fbterm-1.7.fix/src/fbshell.cpp	2019-04-18 21:35:03.757755348 +0800
+@@ -745,6 +745,12 @@
+ 	if (!mImProxy) mImProxy = new ImProxy(this);
+ 
+ 	if (mImProxy) {
++        //when im actived, ctrl+space trigger toggleActive to deactive and set rawmode.
++        //But it's too late and will send ctrl + space key to screen.
++        //that's the reason two weird char appended when deactive im.
++        //Here, setRawMode imediately when deactive happened.
++        if(mImProxy->actived())
++           TtyInput::instance()->setRawMode(true, true);
+ 		mImProxy->toggleActive();
+ 		reportCursor();
+ 		reportMode();
